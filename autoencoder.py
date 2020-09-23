@@ -87,22 +87,15 @@ def predict(params, X):
     '''
 
     A2, fw = forward(X, parameters)
-    predictions = (A2 > 0.5)
     
-    return predictions
+    return A2
 
 
 if __name__ == "__main__":
     
+    size = 15
 
-    X = np.array([[1, 0, 0, 0, 0, 0, 0, 0],
-                  [0, 1, 0, 0, 0, 0, 0, 0],
-                  [0, 0, 1, 0, 0, 0, 0, 0],
-                  [0, 0, 0, 1, 0, 0, 0, 0],
-                  [0, 0, 0, 0, 1, 0, 0, 0],
-                  [0, 0, 0, 0, 0, 1, 0, 0],
-                  [0, 0, 0, 0, 0, 0, 1, 0],
-                  [0, 0, 0, 0, 0, 0, 0, 1]])
+    X = np.identity(size)
 
     #y = np.array([0, 0, 1, 1])
     #y = y.reshape(1, y.shape[0])
@@ -119,38 +112,30 @@ if __name__ == "__main__":
     iterations = 10
     learning_rate = 0.1
 
+    dataset = []
+
+    for i in range(10):
+        X_random = np.random.randint(2, size=(size, size))
+
+        dataset.append(X_random.flatten().reshape(n_input, 1))
+
+    X = X.flatten().reshape(n_input, 1)
 
     for epoch in range(epochs):
 
         print("Epoch %s:" % str(epoch + 1))
 
-        for e in range(examples):
-
-            #print("Learning Rate: " + str(learning_rate))
-            #print("-------------------------")
-
-            #print("Inputs: ")
-            #print("x1: %d" %  X[0][e])
-            #print("x2: %d" %  X[1][e])
-            #print("-------------------------")
-
-            #print("Output: ")
-            #print("x1: %d" %  y[0][e])
-            #print("-------------------------")
-
-            fw = None
+        for inputs in dataset:
 
             for i in range(iterations):
 
                 inputs = X.flatten().reshape(n_input, 1)
 
-                X_hat = inputs
-
                 A2, fw = forward(inputs, parameters)
 
-                cost = cost_function(A2, X_hat, parameters)
+                cost = cost_function(A2, X, parameters)
 
-                grads = backward(parameters, fw, inputs, X_hat)
+                grads = backward(parameters, fw, inputs, X)
 
                 W1 = parameters["W1"]
                 B1 = parameters["B1"]
@@ -172,30 +157,6 @@ if __name__ == "__main__":
                 parameters["W2"] = W2
                 parameters["B2"] = B2
 
-            #print("Weights:")
-            #print("W{h1}01 = " + str(parameters["B1"][0,0]))
-            #print("W{h1}11 = " + str(parameters["W1"][0,1]))
-            #print("W{h1}21 = " + str(parameters["W1"][0,2]))
-            #print("W{h1}02 = " + str(parameters["B1"][1,0]))
-            #print("W{h1}12 = " + str(parameters["W1"][1,1]))
-            #print("W{h1}22 = " + str(parameters["W1"][1,2]))
-            #print("W{out}01 = " + str(parameters["W2"][0,0]))
-            #print("W{out}11 = " + str(parameters["W2"][0,1]))
-            #print("W{out}21 = " + str(parameters["W2"][0,2]))
-            #print("-------------------------")
-
-            #print("Layer h1:")
-            #print("v{h1}1: %.4f" % fw["Z1"][0,0])
-            #print("v{h1}2: %.4f" % fw["Z1"][1,0])
-            #print("f[v{h1}1]: %.4f" % fw["A1"][0,0])
-            #print("f[v{h1}2]: %.4f" % fw["A1"][1,0])
-            #print("-------------------------")
-
-            #print("Layer out:")
-            #print("v{out}1: %.4f" % fw["Z1"][0,0])
-            #print("f[v{out}1]: %.4f" % fw["A1"][0,0])
-            #print("-------------------------")
 
             predictions = predict(parameters, inputs)
             print("predictions mean = " + str(np.mean(predictions)))
-            print("\n\n")
