@@ -17,15 +17,15 @@ def initialize_weights(n_input, n_hidden, n_output):
 
     W1 = np.random.rand(n_hidden, n_input)
     B1 = np.random.rand(n_hidden, 1)
-    W2 = np.random.rand(n_output, n_input)
+    W2 = np.random.rand(n_output, n_hidden)
     B2 = np.random.rand(n_output, 1)
 
 
     return {'W1': W1, 'B1': B1, 'W2': W2, 'B2': B2}
 
-def encoder(X, params):
+def forward(X, params):
     '''
-    Encoder linear equation calculus propagation
+    Forward linear equation calculus propagation
     '''
 
     W1 = params['W1']
@@ -38,43 +38,12 @@ def encoder(X, params):
     Z2 = np.dot(W2, A1) + B2
     A2 = sigmoid(Z2)
 
-    enc = {'Z1': Z1,
+    fw = {'Z1': Z1,
           'A1': A1,
           'A2': A2,
           'Z2': Z2}
 
-    return A2, enc
-
-def decoder(y, params):
-    '''
-    Decoder linear equation calculus propagation
-    '''
-
-    W1 = params['W1']
-    B1 = params['B1']
-    W2 = params['W2']
-    B2 = params['B2']
-
-    Z2 = np.dot(W2, y) + B2
-    A2 = sigmoid(Z2)
-    Z1 = np.dot(W1, A2) + B1
-    A1 = sigmoid(Z1)
-
-    dec = {'Z1': Z1,
-          'A1': A1,
-          'A2': A2,
-          'Z2': Z2}
-
-    return A2, dec
-
-def forward(X, params):
-    
-    output, encode = encoder(X, params)
-
-    cost = cost_function(output, X, params)
-
-    grads = backward(params, encode, X, X)
-
+    return A2, fw
     
 
 def cost_function(A2, y, params):
@@ -117,7 +86,7 @@ def predict(params, X):
     Predictions function
     '''
 
-    A2, fw = encoder(X, parameters)
+    A2, fw = forward(X, parameters)
     predictions = (A2 > 0.5)
     
     return predictions
@@ -139,8 +108,8 @@ if __name__ == "__main__":
     #y = y.reshape(1, y.shape[0])
 
     n_input = X.shape[0]**2
-    n_hidden = X.shape[0]**2
-    n_output = (X.shape[0]/2)**2
+    n_hidden = int((X.shape[0]/2)**2)
+    n_output = X.shape[0]**2
 
 
     parameters = initialize_weights(n_input, n_hidden, n_output)
@@ -173,23 +142,25 @@ if __name__ == "__main__":
 
             for i in range(iterations):
 
-                X_hat = X
+                inputs = X.flatten().reshape(n_input, 1)
 
-                A2, fw = forward(X, parameters)
+                X_hat = inputs
 
-                cost = cost_function(A2, y_true, parameters)
+                A2, fw = forward(inputs, parameters)
 
-                grads = backward(parameters, fw, x, y_true)
+                cost = cost_function(A2, X_hat, parameters)
 
-                #W1 = parameters["W1"]
-                #B1 = parameters["B1"]
-                #W2 = parameters["W2"]
-                #B2 = parameters["W2"]
+                grads = backward(parameters, fw, inputs, X_hat)
+
+                W1 = parameters["W1"]
+                B1 = parameters["B1"]
+                W2 = parameters["W2"]
+                B2 = parameters["B2"]
             
-                #dW1 = grads["dW1"]
-                #db1 = grads["db1"]
-                #dW2 = grads["dW2"]
-                #db2 = grads["db2"]
+                dW1 = grads["dW1"]
+                db1 = grads["db1"]
+                dW2 = grads["dW2"]
+                db2 = grads["db2"]
 
                 W1 = W1 - learning_rate * dW1
                 B1 = B1 - learning_rate * db1
@@ -225,6 +196,6 @@ if __name__ == "__main__":
             #print("f[v{out}1]: %.4f" % fw["A1"][0,0])
             #print("-------------------------")
 
-            predictions = predict(parameters, x)
+            predictions = predict(parameters, inputs)
             print("predictions mean = " + str(np.mean(predictions)))
             print("\n\n")
