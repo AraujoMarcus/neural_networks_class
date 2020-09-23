@@ -106,9 +106,9 @@ if __name__ == "__main__":
 
     parameters = initialize_weights(n_input, n_hidden, n_output)
 
-    epochs = 25
+    epochs = 10
     examples = X.shape[1]
-    iterations = 1000
+    iterations = 10
     learning_rate = 0.1
 
 
