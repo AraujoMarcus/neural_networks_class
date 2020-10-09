@@ -81,7 +81,7 @@ def backward(params, fw, X, y):
 
 def predict(params, X):
     '''
-    Predictions function
+    Prediction function
     '''
 
     A2, fw = forward(X, parameters)
@@ -97,19 +97,26 @@ if __name__ == "__main__":
     with open('/home/guilherme/workspace/neural_networks_class/wine/wine.data', 'r') as fs:
         for line in fs:
             l = line.split(',')
-            y.append(l[0])
             X.append(l[1:])
+            
+            if l[0] == '1':
+                y.append([1, 0, 0])
+            if l[0] == '2':
+                y.append([0, 1, 0])
+            if l[0] == '3':
+                y.append([0, 0, 1])
+            
 
     fs.close()
 
     X = np.array(X).astype('float32').T
 
     y = np.array(y).astype('float32')
-    y = y.reshape(1, y.shape[0])
+    y = [i.T.reshape(3, 1) for i in y]
 
     n_input = X.shape[0]
     n_hidden = 2 * n_input
-    n_output = y.shape[0]
+    n_output = 3
 
 
     parameters = initialize_weights(n_input, n_hidden, n_output)
@@ -129,7 +136,7 @@ if __name__ == "__main__":
             for i in range(iterations):
 
                 x = X[:,e].reshape(X.shape[0], 1)
-                y_true = y[:,e].reshape(y.shape[0], 1)
+                y_true = y[e]
 
                 A2, fw = forward(x, parameters)
 
@@ -161,7 +168,7 @@ if __name__ == "__main__":
     random = np.random.randint(179, size=1)
 
     x = X[:,random[0]].reshape(X.shape[0], 1)
-    y_true = y[:, random[0]]
-    print("True wine category: " + str(int(y_true)))
+    y_true = y[random[0]]
+    print("True wine category: " + str(y_true))
     predictions = predict(parameters, x)
-    print("predictions mean = " + str(np.mean(predictions)))
+    print("predictions = " + str(predictions))
