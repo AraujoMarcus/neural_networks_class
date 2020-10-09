@@ -15,8 +15,8 @@ def initialize_weights(n_input, n_hidden, n_output):
     Initialize weights and bias with random values
     '''
 
-    W1 = np.random.randn(n_hidden, n_input + 1) * 0.01
-    W2 = np.random.randn(n_output, n_hidden + 1) * 0.01
+    W1 = np.random.rand(n_hidden, n_input + 1)
+    W2 = np.random.rand(n_output, n_hidden + 1)
 
 
     return {'W1': W1, 'W2': W2}
@@ -92,22 +92,23 @@ def predict(params, X):
 
 if __name__ == "__main__":
     
-    y = []
-    X = []
+    dataset = []
     with open('/home/guilherme/workspace/neural_networks_class/wine/wine.data', 'r') as fs:
         for line in fs:
             l = line.split(',')
-            X.append(l[1:])
-            
-            if l[0] == '1':
-                y.append([1, 0, 0])
-            if l[0] == '2':
-                y.append([0, 1, 0])
-            if l[0] == '3':
-                y.append([0, 0, 1])
-            
+            dataset.append(l)
 
     fs.close()
+
+    dataset = np.array(dataset)
+    np.random.shuffle(dataset)
+
+    X = dataset[:,1:]
+
+    y = [[0,0,0] for i in range(X.shape[0])]
+
+    for i, v in enumerate(dataset[:,0]):
+        y[i][int(v)-1] = 1
 
     X = np.array(X).astype('float').T
 
@@ -115,15 +116,15 @@ if __name__ == "__main__":
     y = [i.T.reshape(3, 1) for i in y]
 
     n_input = X.shape[0]
-    n_hidden = 2 * n_input
+    n_hidden = 3
     n_output = 3
 
 
     parameters = initialize_weights(n_input, n_hidden, n_output)
 
-    epochs = 25
+    epochs = 5
     examples = X.shape[1]
-    iterations = 10
+    iterations = 100
     learning_rate = 0.1
 
 
@@ -163,6 +164,8 @@ if __name__ == "__main__":
                 parameters["W1"][:,0] = b1.reshape(b1.shape[0])
                 parameters["W2"][:,1:] = W2
                 parameters["W2"][:,0] = b2.reshape(b2.shape[0])
+            
+        print("Cost: %.4f" % cost)
 
 
     random = np.random.randint(179, size=1)
