@@ -85,9 +85,9 @@ def predict(params, X):
     '''
 
     A2, fw = forward(X, parameters)
-    predictions = (A2 > 0.5)
+    #predictions = (A2 > 0.5)
     
-    return predictions
+    return A2
 
 
 if __name__ == "__main__":
@@ -109,9 +109,9 @@ if __name__ == "__main__":
 
     fs.close()
 
-    X = np.array(X).astype('float32').T
+    X = np.array(X).astype('float').T
 
-    y = np.array(y).astype('float32')
+    y = np.array(y).astype('float')
     y = [i.T.reshape(3, 1) for i in y]
 
     n_input = X.shape[0]
@@ -170,5 +170,7 @@ if __name__ == "__main__":
     x = X[:,random[0]].reshape(X.shape[0], 1)
     y_true = y[random[0]]
     print("True wine category: " + str(y_true))
+
     predictions = predict(parameters, x)
+    np.set_printoptions(formatter={'float': lambda predictions: "{0:0.3f}".format(predictions)})
     print("predictions = " + str(predictions))
