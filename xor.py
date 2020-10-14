@@ -100,7 +100,7 @@ if __name__ == "__main__":
     y = y.reshape(1, y.shape[0])
 
     n_input = X.shape[0]
-    n_hidden = 2
+    n_hidden = 4
     n_output = y.shape[0]
 
 
