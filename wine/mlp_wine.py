@@ -93,7 +93,7 @@ def predict(params, X):
 if __name__ == "__main__":
     
     dataset = []
-    with open('/home/guilherme/workspace/neural_networks_class/wine/wine.data', 'r') as fs:
+    with open('./wine.data', 'r') as fs:
         for line in fs:
             l = line.split(',')
             dataset.append(l)
