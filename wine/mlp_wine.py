@@ -93,7 +93,7 @@ def predict(params, X):
 if __name__ == "__main__":
     
     dataset = []
-    with open('./wine.data', 'r') as fs:
+    with open('/home/guilherme/workspace/neural_networks_class/wine/wine.data', 'r') as fs:
         for line in fs:
             l = line.split(',')
             dataset.append(l)
@@ -168,12 +168,33 @@ if __name__ == "__main__":
         print("Cost: %.4f" % cost)
 
 
-    random = np.random.randint(179, size=1)
 
-    x = X[:,random[0]].reshape(X.shape[0], 1)
-    y_true = y[random[0]]
-    print("True wine category: " + str(y_true))
+    # Test fase
+    preds = []
+    for i in range(100):
 
-    predictions = predict(parameters, x)
-    np.set_printoptions(formatter={'float': lambda predictions: "{0:0.3f}".format(predictions)})
-    print("predictions = " + str(predictions))
+        random = np.random.randint(178, size=1)
+
+        x = X[:,random[0]].reshape(X.shape[0], 1)
+        y_true = y[random[0]]
+        print("True wine category: " + str(y_true))
+
+        lst = predict(parameters, x)
+
+        predictions = []
+        for i in lst:
+            if i < 0.500:
+                predictions.append([0.000])
+            else:
+                predictions.append([1.000])
+
+        np.set_printoptions(formatter={'float': lambda predictions: "{0:0.3f}".format(predictions)})
+        preds.append(np.array_equal(predictions, y_true))
+        print("predictions = " + str(predictions))
+
+    total = 0
+    for i in preds:
+        if i:
+            total += 1
+
+    print('Accuracy: %d%%' % total)
