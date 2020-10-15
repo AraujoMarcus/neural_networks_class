@@ -52,8 +52,9 @@ class RBF:
   
 
 if __name__ == '__main__':
-    df = pd.read_csv('wine.data', names=["label","Alcohol","Malic acid","Ash","Alcalinity of ash","Magnesium","Total phenols","Flavanoids","Nonflavanoid phenols","Proanthocyanins","Color intensity","Hue","OD280/OD315 of diluted wines","Proline"] )
+    df = pd.read_csv('/home/guilherme/workspace/neural_networks_class/wine/wine.data', names=["label","Alcohol","Malic acid","Ash","Alcalinity of ash","Magnesium","Total phenols","Flavanoids","Nonflavanoid phenols","Proanthocyanins","Color intensity","Hue","OD280/OD315 of diluted wines","Proline"] )
 
+    df = df.sample(frac=1).reset_index(drop=True)
     x = df.values[:, 1:]
     y = df.values[:, 0]
 
@@ -69,7 +70,13 @@ if __name__ == '__main__':
     rbf = RBF(indim=13, numCenters=2, outdim=1)
 
     rbf.train(x, new_y)
-    z = rbf.test(x)
 
-    print(z)
+    # Test fase
+    rnd = random.randint(179, size=1)
+    z_true = new_y[rnd[0]]
+    print('Real answer: ' + str(z_true))
+
+    z = rbf.test(x[rnd[0],:].reshape(1, x.shape[1]))
+
+    print('Prediction answer:' + str(z))
     
