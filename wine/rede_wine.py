@@ -99,8 +99,6 @@ for cicle in cicles:
         for m in momentum:
             for proportion in train_size:
                 
-                
-                
                 #Inicializando matriz W com pesos aleatorios
                 Ws_1cam = []
                 delta_Ws_1cam = []

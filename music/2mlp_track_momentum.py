@@ -94,7 +94,7 @@ def predict(params, X):
 if __name__ == "__main__":
     
     dataset = []
-    with open('/home/guilherme/workspace/neural_networks_class/wine/wine.data', 'r') as fs:
+    with open('/home/guilherme/workspace/neural_networks_class/music/default_features_1059_tracks.txt', 'r') as fs:
         for line in fs:
             l = line.split(',')
             dataset.append(l)
@@ -102,23 +102,28 @@ if __name__ == "__main__":
     fs.close()
 
     dataset = np.array(dataset)
-    np.random.shuffle(dataset)
+    #np.random.shuffle(dataset)
 
-    X = dataset[:,1:]
+    X = dataset[:,:-2]
+    z = []
 
-    y = [[0,0,0] for i in range(X.shape[0])]
+    for i in dataset[:,-1]: 
+        z.append(i.split('\n')[0])
 
-    for i, v in enumerate(dataset[:,0]):
-        y[i][int(v)-1] = 1
+    z = np.array(z)
+    dataset[:, -1] = z.T
+
+    y = dataset[:,68:]
 
     X = np.array(X).astype('float').T
 
     y = np.array(y).astype('float')
-    y = [i.T.reshape(3, 1) for i in y]
+    y = [i.T.reshape(2, 1) for i in y]
+    
 
     n_input = X.shape[0]
-    n_hidden = 3
-    n_output = 3
+    n_hidden = X.shape[0] * 2
+    n_output = 2
 
 
     parameters = initialize_weights(n_input, n_hidden, n_output)
@@ -181,7 +186,7 @@ if __name__ == "__main__":
                 parameters["deltaW2"][:,1:] = deltaW2
                 parameters["deltaW2"][:,0] = deltab2.reshape(b2.shape[0])
             
-            print("Cost: %.4f" % cost)
+        print("Cost: %.4f" % cost)
 
 
 
@@ -196,6 +201,7 @@ if __name__ == "__main__":
         #print("True wine category: " + str(y_true))
 
         lst = predict(parameters, x)
+        print("predictions: " + str(lst))
 
         predictions = []
         for i in lst:

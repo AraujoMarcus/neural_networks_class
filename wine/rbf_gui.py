@@ -1,3 +1,5 @@
+# https://pythonmachinelearning.pro/using-neural-networks-for-regression-radial-basis-function-networks/
+
 import scipy as sc
 import numpy as np
 from scipy.linalg import norm, pinv
